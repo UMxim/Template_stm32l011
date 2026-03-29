@@ -91,10 +91,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  volatile uint8_t a = 1;
-  while(a);
   template_init();
-  timer_delay_ms(2000);
+  timer_delay_ms(1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -105,6 +103,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  LL_GPIO_TogglePin(led_GPIO_Port, led_Pin);
+	  timer_delay_ms(500);
   }
   /* USER CODE END 3 */
 }
@@ -159,9 +159,21 @@ void SystemClock_Config(void)
   */
 static void MX_GPIO_Init(void)
 {
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
+
+  /**/
+  LL_GPIO_ResetOutputPin(led_GPIO_Port, led_Pin);
+
+  /**/
+  GPIO_InitStruct.Pin = led_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(led_GPIO_Port, &GPIO_InitStruct);
 
 }
 
